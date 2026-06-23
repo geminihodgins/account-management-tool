@@ -217,21 +217,13 @@ function Confirm-Privileges {
     if ($script:IsAdmin) {
         $Form.Text = "Account Management Tool (Administrator)"
         Write-Output -Message "Administrator privileges confirmed" -Action ([Action]::AUTHENTICATION)
+        Write-Status -Message "Administrator privileges confirmed" -Action ([Action]::AUTHENTICATION)
+        $Form.pCenterContentPanel.Enabled = $true
     } else {
         $Form.Text = "Account Management Tool (Restricted)"
-        Write-Output -Message "Administrator privileges invalid" -Action ([Action]::WARNING)
-
-        Disable-AccountManagementTool
-    }
-}
-
-function Disable-AccountManagementTool {
-    param(
-        [System.Windows.Forms.Form]$Form = $AccountManagementTool
-    )
-
-    if (-not $script:IsAdmin) {
-        # Loop through control list and disable them.
+        Write-Output -Message "Administrator privileges invalid" -Action ([Action]::ERROR)
+        Write-Status -Message "Administrator privileges invalid" -Action ([Action]::ERROR)
+        $Form.pCenterContentPanel.Enabled = $false
     }
 }
 
@@ -590,7 +582,7 @@ System Requirements:
     Write-Output -Message "$(Get-Date -Format 'dddd, MMMM dd, yyyy hh:mm:ss tt')" -Timestamp $false -ActionRequired $false
 
     Get-CurrentUser
-    #Confirm-Privileges
+    Confirm-Privileges
 
 }
 
